@@ -1,32 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:peroque/paginas/registration_page.dart';
+import 'package:peroque/paginas/login_page.dart';
 
-import 'home_page.dart';
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class RegistationPage extends StatefulWidget {
+  const RegistationPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegistationPage> createState() => _RegistationPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
+class _RegistationPageState extends State<RegistationPage> {
+  final _forKey = GlobalKey<FormState>();
 
   bool _obscureText = true;
-  final TextEditingController userNameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final userNameEditingController = TextEditingController();
+  final emailEditingController = TextEditingController();
+  final passwordEditingController = TextEditingController();
+  final confirmPasswordEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final userNameField = TextFormField(
       autofocus: false,
-      controller: userNameController,
-      keyboardType: TextInputType.name,
+      controller: userNameEditingController,
+      keyboardType: TextInputType.emailAddress,
       onSaved: (value) {
-        userNameController.text = value!;
+        userNameEditingController.text = value!;
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
@@ -40,12 +38,31 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
+    final emailField = TextFormField(
+      autofocus: false,
+      controller: emailEditingController,
+      keyboardType: TextInputType.emailAddress,
+      onSaved: (value) {
+        emailEditingController.text = value!;
+      },
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.mail),
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+        fillColor: const Color.fromARGB(85, 224, 219, 236),
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+
     final passwordField = TextFormField(
       autofocus: false,
-      controller: passwordController,
+      controller: passwordEditingController,
       obscureText: _obscureText,
       onSaved: (value) {
-        passwordController.text = value!;
+        passwordEditingController.text = value!;
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
@@ -67,7 +84,34 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-    final loginButton = Material(
+    final confirmPasswordField = TextFormField(
+      autofocus: false,
+      controller: confirmPasswordEditingController,
+      obscureText: _obscureText,
+      onSaved: (value) {
+        confirmPasswordEditingController.text = value!;
+      },
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.lock),
+        suffixIcon: GestureDetector(
+          onTap: () {
+            setState(() {
+              _obscureText = !_obscureText;
+            });
+          },
+          child: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+        fillColor: const Color.fromARGB(85, 224, 219, 236),
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+
+    final signUpButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(12),
       color: const Color.fromARGB(255, 121, 127, 247),
@@ -75,10 +119,10 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 85),
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const HomePage()));
+              MaterialPageRoute(builder: (context) => const LoginPage()));
         },
         child: const Text(
-          "Entrar",
+          "Confirmar",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
@@ -88,15 +132,25 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new,
+              color: Color.fromARGB(255, 121, 127, 247)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: Center(
         child: SingleChildScrollView(
           child: Container(
             color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(36.0),
               child: Form(
-                key: _formKey,
+                key: _forKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -105,14 +159,14 @@ class _LoginPageState extends State<LoginPage> {
                       height: 50,
                     ),
                     SizedBox(
-                      height: 210,
+                      height: 180,
                       child:
                           Image.asset("assets/logo.png", fit: BoxFit.contain),
                     ),
                     Container(
-                      padding: const EdgeInsets.only(top: 50.0, right: 188),
+                      padding: const EdgeInsets.only(top: 50.0, right: 268),
                       child: const Text(
-                        'Inicio de sesion',
+                        'Registrate',
                         style: TextStyle(
                             color: Color.fromARGB(255, 121, 127, 247),
                             fontSize: 30,
@@ -133,6 +187,18 @@ class _LoginPageState extends State<LoginPage> {
                     userNameField,
                     Container(
                       padding: const EdgeInsets.only(
+                          top: 25, bottom: 10, right: 345),
+                      child: const Text(
+                        'E-mail',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 121, 127, 247),
+                            fontSize: 18,
+                            fontWeight: FontWeight.normal),
+                      ),
+                    ),
+                    emailField,
+                    Container(
+                      padding: const EdgeInsets.only(
                           top: 25, bottom: 10, right: 310),
                       child: const Text(
                         'Contraseña',
@@ -143,37 +209,20 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     passwordField,
-                    const SizedBox(height: 45),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RegistationPage()));
-                          },
-                          child: const Text(
-                            "Registrate gratis ",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 252, 200, 227),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          ),
-                        ),
-                        const Text(
-                          "si aun no tienes cuenta",
-                          style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                          ),
-                        )
-                      ],
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 25, bottom: 10, right: 225),
+                      child: const Text(
+                        'Confirmar contraseña',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 121, 127, 247),
+                            fontSize: 18,
+                            fontWeight: FontWeight.normal),
+                      ),
                     ),
+                    confirmPasswordField,
                     const SizedBox(height: 45),
-                    loginButton,
+                    signUpButton,
                     const SizedBox(height: 45)
                   ],
                 ),
